@@ -13,11 +13,14 @@ class TestParentNode(unittest.TestCase):
                 LeafNode(None, "Normal text"),
                 LeafNode("i", "italic text"),
                 LeafNode(None, "Normal text"),
-            ], "p"
+            ],
+            "p",
         )
         nodeHTML = node.to_html()
-        nodeReference = "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
-        self.assertEqual(nodeHTML,nodeReference)
+        nodeReference = (
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
+        )
+        self.assertEqual(nodeHTML, nodeReference)
 
     def test_eq_with_nested_parentnode(self):
         node = ParentNode(
@@ -26,11 +29,14 @@ class TestParentNode(unittest.TestCase):
                 LeafNode(None, "Normal text"),
                 LeafNode("i", "italic text"),
                 LeafNode(None, "Normal text"),
-            ], "p"
+            ],
+            "p",
         )
         nodeHTML = node.to_html()
-        nodeReference = "<p><p><b>Bold text</b></p>Normal text<i>italic text</i>Normal text</p>"
-        self.assertEqual(nodeHTML,nodeReference)
+        nodeReference = (
+            "<p><p><b>Bold text</b></p>Normal text<i>italic text</i>Normal text</p>"
+        )
+        self.assertEqual(nodeHTML, nodeReference)
 
     def test_eq_no_children(self):
         node = ParentNode(None, "a")

@@ -1,20 +1,23 @@
 from text_type_dicts import dict_text_type
 
 from textnode import TextNode
-from extract_inline_element import extract_markdown_images,extract_markdown_links
+from extract_inline_element import extract_markdown_images, extract_markdown_links
+
 
 def split_nodes_delimiter(old_nodes, delimiter):
     new_nodes = []
-    if not any([True for k,v in dict_text_type.items() if v["delimiter"] == delimiter]):
+    if not any(
+        [True for k, v in dict_text_type.items() if v["delimiter"] == delimiter]
+    ):
         raise ValueError("Not a valid delimiter " + f": {delimiter}")
-    if not type(old_nodes) == list:
+    if type(old_nodes) is not list:
         raise TypeError("Type of old_nodes must be a list " + f": {type(old_nodes)}")
-    if delimiter == None:
+    if delimiter is None:
         return old_nodes
     for node in old_nodes:
-        if not type(node) == TextNode:
+        if type(node) is not TextNode:
             raise TypeError("Type of node must be TextNode " + f": {type(node)}")
-        if not node.text_type == "text":
+        if node.text_type != "text":
             new_nodes.append(node)
             continue
         for index, item in enumerate(node.text.split(delimiter)):
@@ -23,20 +26,21 @@ def split_nodes_delimiter(old_nodes, delimiter):
             if index % 2 == 0:
                 new_nodes.append(TextNode(item, "text"))
             else:
-                for k,v in dict_text_type.items():
+                for k, v in dict_text_type.items():
                     if v["delimiter"] == delimiter:
                         new_nodes.append(TextNode(item, k))
     return new_nodes
 
+
 def split_nodes_image(old_nodes):
     new_nodes = []
-    if not type(old_nodes) == list:
+    if type(old_nodes) is not list:
         raise TypeError("Type of old_nodes must be a list " + f": {type(old_nodes)}")
     for node in old_nodes:
         text_to_split = node.text
-        if not type(node) == TextNode:
+        if type(node) is not TextNode:
             raise TypeError("Type of node must be TextNode " + f": {type(node)}")
-        if not node.text_type == "text":
+        if node.text_type != "text":
             new_nodes.append(node)
             continue
         extracted_images = extract_markdown_images(node.text)
@@ -47,25 +51,29 @@ def split_nodes_image(old_nodes):
             alt = image[0]
             url = image[1]
             section = text_to_split.split(f"![{alt}]({url})", 1)
-            if (section[0].strip(" ") != ""):
+            if section[0].strip(" ") != "":
                 new_nodes.append(TextNode(section[0], "text"))
             else:
                 continue
             new_nodes.append(TextNode(alt, "image", url))
             text_to_split = section[1]
-            if(index_extract == len(extracted_images) - 1 and section[1].strip(" ") != ""):
+            if (
+                index_extract == len(extracted_images) - 1
+                and section[1].strip(" ") != ""
+            ):
                 new_nodes.append(TextNode(section[1], "text"))
     return new_nodes
 
+
 def split_nodes_link(old_nodes):
     new_nodes = []
-    if not type(old_nodes) == list:
+    if type(old_nodes) is not list:
         raise TypeError("Type of old_nodes must be a list " + f": {type(old_nodes)}")
     for node in old_nodes:
         text_to_split = node.text
-        if not type(node) == TextNode:
+        if type(node) is not TextNode:
             raise TypeError("Type of node must be TextNode " + f": {type(node)}")
-        if not node.text_type == "text":
+        if node.text_type != "text":
             new_nodes.append(node)
             continue
         extracted_links = extract_markdown_links(node.text)
@@ -76,15 +84,19 @@ def split_nodes_link(old_nodes):
             link_text = link[0]
             link_url = link[1]
             section = text_to_split.split(f"[{link_text}]({link_url})", 1)
-            if (section[0].strip(" ") != ""):
+            if section[0].strip(" ") != "":
                 new_nodes.append(TextNode(section[0], "text"))
             else:
                 continue
             new_nodes.append(TextNode(link_text, "link", link_url))
             text_to_split = section[1]
-            if(index_extract == len(extracted_links) - 1 and section[1].strip(" ") != ""):
+            if (
+                index_extract == len(extracted_links) - 1
+                and section[1].strip(" ") != ""
+            ):
                 new_nodes.append(TextNode(section[1], "text"))
     return new_nodes
+
 
 def split_md_blocks(markdown: str):
     blocks = []

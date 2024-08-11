@@ -1,5 +1,6 @@
 from htmlnode import HTMLNode
 
+
 class ParentNode(HTMLNode):
     def __init__(self, CHILDREN, TAG=None, PROPS=None):
         super().__init__(TAG, None, CHILDREN, PROPS)

@@ -5,8 +5,12 @@ class TextNode:
         self.url = URL
 
     def __eq__(self, value: object) -> bool:
-        if self.text == value.text and self.text_type == value.text_type and self.url == value.url:
+        if (
+            self.text == value.text
+            and self.text_type == value.text_type
+            and self.url == value.url
+        ):
             return True
 
     def __repr__(self) -> str:
-        return f'TextNode({self.text}, {self.text_type}, {self.url})'
+        return f"TextNode({self.text}, {self.text_type}, {self.url})"
