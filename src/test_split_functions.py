@@ -1,6 +1,7 @@
 import unittest
 from textnode import TextNode
 from split_functions import (
+    extract_title,
     split_md_blocks,
     split_nodes_delimiter,
     split_nodes_image,
@@ -100,6 +101,13 @@ class TestSplitNodeFunctions(unittest.TestCase):
     def test_block_raises_wrong_type(self):
         with self.assertRaises(TypeError):
             split_md_blocks([])
+
+    # Extract title from markdown
+    def test_extract_title_from_markdown(self):
+        title = extract_title("# This is the title")
+        title_comparison = "This is the title"
+
+        self.assertEqual(title, title_comparison)
 
 
 if __name__ == "__main__":

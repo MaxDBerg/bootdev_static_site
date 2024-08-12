@@ -117,3 +117,11 @@ def split_md_blocks(markdown: str):
             blocks.append(block[:-1])
 
     return blocks
+
+
+def extract_title(markdown: str):
+    if type(markdown) is not str:
+        raise TypeError("Type of markdown has to be string")
+    for line in markdown.splitlines():
+        if line.startswith("# "):
+            return line.removeprefix("# ")

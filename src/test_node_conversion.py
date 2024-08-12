@@ -1,7 +1,13 @@
 import unittest
 from leafnode import LeafNode
+from parentnode import ParentNode
 from textnode import TextNode
-from node_conversion import block_to_blocktype, text_node_to_html_node, text_to_textnode
+from node_conversion import (
+    block_to_blocktype,
+    markdown_to_htmlnode,
+    text_node_to_html_node,
+    text_to_textnode,
+)
 
 
 class TestNodeConversion(unittest.TestCase):
@@ -121,6 +127,95 @@ class TestNodeConversion(unittest.TestCase):
     def test_blocktype_raises_not_str(self):
         with self.assertRaises(TypeError):
             block_to_blocktype([])
+
+    # Markdown to HTMLNode
+    def test_htmlnode_heading(self):
+        markdown = "# This is a heading many wow\n\n###### This is another heading WOW"
+        node_comparison = ParentNode(
+            [
+                ParentNode([LeafNode(None, "This is a heading many wow")], "h1"),
+                ParentNode([LeafNode(None, "This is another heading WOW")], "h6"),
+            ],
+            "div",
+        )
+        node = markdown_to_htmlnode(markdown)
+        self.assertEqual(node, node_comparison)
+
+    def test_htmlnode_code(self):
+        markdown = "```\nThis is a code snippet\n```"
+        node_comparison = ParentNode(
+            [
+                ParentNode(
+                    [
+                        ParentNode([LeafNode(None, "This is a code snippet")], "code"),
+                    ],
+                    "pre",
+                )
+            ],
+            "div",
+        )
+        node = markdown_to_htmlnode(markdown)
+        self.assertEqual(node, node_comparison)
+
+    def test_htmlnode_quote(self):
+        markdown = "> This is a quote many wow\n> This is another quote WOW"
+        node_comparison = ParentNode(
+            [
+                ParentNode(
+                    [
+                        LeafNode(
+                            None, "This is a quote many wow\nThis is another quote WOW"
+                        )
+                    ],
+                    "blockquote",
+                ),
+            ],
+            "div",
+        )
+        node = markdown_to_htmlnode(markdown)
+        self.assertEqual(node, node_comparison)
+
+    def test_htmlnode_unordered_list(self):
+        markdown = "- This is a list item many wow\n- This is another list item WOW"
+        node_comparison = ParentNode(
+            [
+                ParentNode(
+                    [
+                        ParentNode(
+                            [LeafNode(None, "This is a list item many wow")], "li"
+                        ),
+                        ParentNode(
+                            [LeafNode(None, "This is another list item WOW")], "li"
+                        ),
+                    ],
+                    "ul",
+                )
+            ],
+            "div",
+        )
+        node = markdown_to_htmlnode(markdown)
+        self.assertEqual(node, node_comparison)
+
+    def test_htmlnode_ordered_list(self):
+        markdown = "1. This is a list item many wow\n2. This is another list item WOW"
+        node_comparison = ParentNode(
+            [
+                ParentNode(
+                    [
+                        ParentNode(
+                            [LeafNode(None, "This is a list item many wow")], "li"
+                        ),
+                        ParentNode(
+                            [LeafNode(None, "This is another list item WOW")], "li"
+                        ),
+                    ],
+                    "ol",
+                )
+            ],
+            "div",
+        )
+        node = markdown_to_htmlnode(markdown)
+        self.assertEqual(node, node_comparison)
 
 
 if __name__ == "__main__":
